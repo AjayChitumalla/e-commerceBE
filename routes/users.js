@@ -5,19 +5,22 @@ var RegUser = require('../models/user');
 var Token = require('../models/token');
 var passport = require('passport');
 var crypto = require('crypto');
-/* GET users listing. */
-// router.post('/login',passport.authenticate('local'),(req, res)=> {
-//   RegUser.findOne({ username: req.body.username }, function(err, user) {
-//        // Make sure the user has been verified
-//       if (!user.isverified) return res.status(403).send({ type: 'not-verified', msg: 'Your account has not been verified.' }); 
+var config = require('../config');
+var jwt = require('jsonwebtoken');
 
-//       // Login successful, write token, and send back user
-//       console.log(req);
-//       res.status(200).send({msg:"Successfully Logged In!!!",uid: req.user._id});
-//   });
-// });
 passport.serializeUser(RegUser.serializeUser());
 passport.deserializeUser(RegUser.deserializeUser());
+
+router.get('/',(req,res)=>{
+  RegUser.find({},(err,docs)=>{
+    if(err){
+      console.log(err);
+      res.send({err:err});
+    }
+    else
+      res.send(docs);
+  })
+})
 
 router.post('/login', function(req, res,next) {
   passport.authenticate('local', function(err, user, info) {
@@ -36,8 +39,9 @@ router.post('/login', function(req, res,next) {
                 err: 'Could not log in user'
             });
         }
-        console.log(req.user);
-        res.status(200).send({msg:"Successfully Logged In!!!",uid: req.user._id});
+        let payload={subject:user._id}
+        let token=jwt.sign(payload,config.secret);
+        res.status(200).send({msg:"Successfully Logged In!!!",token:token});
     });
   })(req, res,next)
 });
@@ -74,8 +78,8 @@ router.post('/signup',(req, res)=> {
         service:"gmail",
         host: "smtp.gmail.com",
         auth: {
-        user: 'noreply111999@gmail.com',
-        pass: 'nmhxbiadskcteleo',
+        user: config.user,
+        pass: config.pass,
         },
         });
         var mailOptions = {  to:mailid, subject: 'Account Verification Token', text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + tokenid + '.\n' };
@@ -88,9 +92,6 @@ router.post('/signup',(req, res)=> {
 });
 
 router.post('/reset',(req,res)=>{
-  if(req.user){
-    return res.status(403).send({msg:"A session is already running on this device,please logout to continue!!"})
-  }
   RegUser.findOne({ username: req.body.username }, function (err, user) {
     if(!user) return res.status(400).send({ msg: 'There is no account associated to this email.'});
      // Send the email
@@ -107,8 +108,8 @@ router.post('/reset',(req,res)=>{
       service:"gmail",
       host: "smtp.gmail.com",
       auth: {
-      user: 'noreply111999@gmail.com',
-      pass: 'nmhxbiadskcteleo',
+      user: config.user,
+      pass: config.pass,
       },
     });
     var mailOptions = {  to: user.username, subject: 'Password Resest Token', text: 'Hello,\n\n' + 'Please reset your password by clicking the link: ' + req.headers.origin + '\/reset\/' + token + '.\n' };
@@ -120,9 +121,6 @@ router.post('/reset',(req,res)=>{
 });
 
 router.post('/newpassword',(req, res)=> {
-  if(req.user){
-    return res.status(403).send({msg:"A session is already running on this device,please logout to continue!!"})
-  }
   // Find a matching token
   RegUser.findOne({ PasswordResetToken: req.body.id,PasswordResetExpires:{$gt:Date.now()} }, function (err, user) {
     if (!user) return res.status(400).send({ msg: 'We were unable to find a valid token. Your token my have expired.' });
@@ -134,8 +132,4 @@ router.post('/newpassword',(req, res)=> {
    });
 });
 
-router.get('/name',(req,res)=>{
-  console.log(req.user);
-  res.status(200).send({msg:"ok"});
-})
 module.exports = router;
