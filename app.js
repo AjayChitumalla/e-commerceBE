@@ -12,10 +12,7 @@ var productsRouter = require('./routes/products');
 var jwtRouter = require('./jwt');
 var cors = require('cors');
 var app = express();
-var session = require('express-session');
 var bodyParser = require('body-parser');
-var RegUser = require('./models/user');
-var Token = require('./models/token');
 var RegUser = require('./models/user');
 var config = require('./config');
 var jwt = require('jsonwebtoken');
@@ -34,7 +31,9 @@ mongoose.connection.on('connected', function () {
 mongoose.connection.on('error', function (err) {
   console.log("Error while connecting to DB: " + err);
 });
-
+// RegUser.remove(()=>{
+//   console.log('removed');
+// });
 app.use(logger('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser());

@@ -41,7 +41,7 @@ router.post('/login', function(req, res,next) {
         }
         let payload={subject:user._id}
         let token=jwt.sign(payload,config.secret);
-        res.status(200).send({msg:"Successfully Logged In!!!",token:token});
+        res.status(200).send({msg:"Successfully Logged In!!!",token:user._id});
     });
   })(req, res,next)
 });
@@ -86,7 +86,7 @@ router.post('/signup',(req, res)=> {
         transporter.sendMail(mailOptions, function (err) {
             if (err) { return res.status(500).send({ msg: err.message }); }
             res.send({msg:'A verification email has been sent to ' + user.username + '.'});
-        });
+    });
   });
 });
 });
@@ -132,4 +132,27 @@ router.post('/newpassword',(req, res)=> {
    });
 });
 
+router.get('/:id',(req,res)=>{
+  RegUser.findById(req.params.id,(err,docs)=>{
+    if(err)
+      console.log(err);
+    else{
+      console.log(docs)
+      res.status(200).send(docs);
+    }
+  })
+})
+router.post('/order',(req,res)=>{
+  id=req.body.uid;
+  add=req.body.add;
+  items=req.body.items;
+  RegUser.findByIdAndUpdate(id,{Address:add,$push:{Items:items}},(err,docs)=>{
+    if(err)
+      console.log(err);
+    else{
+      console.log(docs);
+      res.send(docs);
+    }
+  })
+})
 module.exports = router;

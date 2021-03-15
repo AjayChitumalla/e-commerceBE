@@ -6,27 +6,32 @@ var UserSchema=new mongoose.Schema({
     username: {
         type: String,
         unique: true,
-        required: 'Your username is required',
-        trim: true
-    },
-    password: {
-        type: String,
-        // required: 'Your password is required',
-        max: 100
-    },
+        required: 'Your username is required'},
     firstname: {
         type: String,
-        required: 'First Name is required',
-        max: 100
-    },
+        required: 'First Name is required'},
     lastname: {
         type: String,
-        required: 'Last Name is required',
-        max: 100
-    },
+        required: 'Last Name is required'},
     isverified:{
         type:Boolean,
-        default:false
+        default:false},
+    Items:[{
+        
+        Name:String,
+        quantity:Number,
+        Price:Number,
+        Image:String,
+        Time:String
+    }],
+    Address:{
+        firstname:String,
+        lastname:String,
+        street:String,
+        city:String,
+        state:String,
+        pin:Number,
+        phone:Number
     },
     PasswordResetToken:String,
     PasswordResetExpires:Date
