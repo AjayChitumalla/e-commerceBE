@@ -17,10 +17,8 @@ var UserSchema=new mongoose.Schema({
         type:Boolean,
         default:false},
     Items:[{
-        
         Name:String,
-        quantity:Number,
-        Price:Number,
+        Quantity:Number,
         Image:String,
         Time:String
     }],
