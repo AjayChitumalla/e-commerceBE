@@ -14,6 +14,7 @@ var cors = require('cors');
 var app = express();
 var bodyParser = require('body-parser');
 var RegUser = require('./models/user');
+var Donation = require('./models/donation');
 var config = require('./config');
 var jwt = require('jsonwebtoken');
 app.use(cors());
@@ -48,7 +49,7 @@ passport.use(new LocalStrategy(RegUser.authenticate()));
 // RegUser.remove({},()=>{
 //   console.log("users del");
 // })
-// Token.remove({},()=>{
+// Donation.remove({},()=>{
 //   console.log("tokens del");
 // })
 // view engine setup
