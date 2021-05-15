@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 var Schema=mongoose.Schema;
-var ProductSchema=new Schema({
+var DonationSchema=new Schema({
     Name:String,
     Quantity:Number,
     Category:String,
@@ -8,4 +8,4 @@ var ProductSchema=new Schema({
     Image:String,
     Status:String
 });
-module.exports=mongoose.model('Product',ProductSchema);
+module.exports=mongoose.model('Donation',DonationSchema);

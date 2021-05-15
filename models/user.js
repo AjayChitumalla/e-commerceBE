@@ -16,11 +16,14 @@ var UserSchema=new mongoose.Schema({
     isverified:{
         type:Boolean,
         default:false},
-    Items:[{
+    Donations:[{
         Name:String,
         Quantity:Number,
         Image:String,
-        Time:String
+        Category:String,
+        Description:String,
+        Time:String,
+        Status:String
     }],
     Address:{
         firstname:String,

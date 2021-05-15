@@ -155,4 +155,14 @@ router.post('/order',(req,res)=>{
     }
   })
 })
+router.post('/updateDonation',(req,res)=>{
+  id=req.body.name;
+  product=req.body.product;
+  RegUser.findByIdAndUpdate(id,{$push:{Donations:product}},(err,docs)=>{
+    if(err)
+      console.log(err);
+    else
+      res.send(docs);
+  })
+})
 module.exports = router;
