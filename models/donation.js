@@ -6,6 +6,8 @@ var DonationSchema=new Schema({
     Category:String,
     Description:String,
     Image:String,
-    Status:String
+    Status:String,
+    Time:String,
+    User:{type: Schema.Types.ObjectId, ref : 'RegUser'}
 });
 module.exports=mongoose.model('Donation',DonationSchema);

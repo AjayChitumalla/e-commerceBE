@@ -5,7 +5,6 @@ var ProductSchema=new Schema({
     Quantity:Number,
     Category:String,
     Description:String,
-    Image:String,
-    Status:String
+    Image:String
 });
 module.exports=mongoose.model('Product',ProductSchema);

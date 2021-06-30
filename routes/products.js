@@ -67,13 +67,16 @@ router.post('/donate',(req,res)=>{
     Quantity:req.body.quantity,
     Description:req.body.desc,
     Category:req.body.cat,
-    Image:req.body.img
+    Image:req.body.img,
+    User:req.body.user,
+    Time:req.body.Time,
+    Status:req.body.Status
   })
   donation.save(function(err,NewD){
     if(err)
       console.log(err);
     else{
-      res.status(200).send({msg:'ok'});
+      res.status(200).send(NewD);
       }
   })
 });
@@ -81,17 +84,28 @@ router.post('/delete',(req,res)=>{
   var arr = req.body.arr;
   for(var i=0;i<arr.length;i++){
     Product.findByIdAndRemove((arr[i]),(err,docs)=>{
-      if(err)
+      if(err){
+        console.log("error");
         console.log(err);
+      }
       else{
+        console.log("removed");
         console.log(docs);
       }
     });
   }
   res.status(200).send({msg:'ok'});
 });
+router.delete('/delete/:id',(req,res)=>{
+  Product.findByIdAndRemove(req.params.id,(err,docs)=>{
+    if(err)
+      console.log(err);
+    else
+      console.log(docs);
+  })
+})
 router.get('/getDonations',(req,res)=>{
-  Donation.find({},(err, docs) => {
+  Donation.find({}).populate('User').exec((err, docs) => {
     if (err) {
       console.log('Error while getting products from DB in /products ' + err);
       res.json({
@@ -102,7 +116,7 @@ router.get('/getDonations',(req,res)=>{
       console.log(docs);
       res.json(docs);
     }
-  });
+  })
 })
 router.get('/:productId',(req,res)=>{
   Product.findById(req.params.productId,(err,docs)=>{
@@ -113,12 +127,36 @@ router.get('/:productId',(req,res)=>{
   })
 });
 router.put('/:productId',(req,res)=>{
-  Product.findByIdAndUpdate((req.params.productId),{Name:req.body.name,Description:req.body.desc,Category:req.body.cat,Price:req.body.price,Image:req.body.img},(err,docs)=>{
+  Product.findByIdAndUpdate((req.params.productId),{Name:req.body.name,Description:req.body.desc,Category:req.body.cat,Quantity:req.body.price,Image:req.body.img},(err,docs)=>{
     if(err)
     console.log(err);
     else
     res.status(200).send({msg:'ok'});
   })
 })
-
+router.get('/getDonation/:donationId',(req,res)=>{
+  Donation.findById(req.params.donationId).populate('User').exec((err,docs)=>{
+    if(err)
+      console.log(err);
+    else
+      res.status(200).send(docs);
+  })
+})
+router.put('/status/:donationId',(req,res)=>{
+  Donation.findByIdAndUpdate((req.params.donationId),{Status:req.body.Status},(err,docs)=>{
+    if(err)
+      console.log(err);
+    else
+      res.status(200).send({msg:"ok"});
+  })
+})
+router.put('/updateQuantity/:id',(req,res)=>{
+  console.log(req.body.quantity)
+  Product.findByIdAndUpdate(req.params.id,{Quantity:req.body.quantity},(err,docs)=>{
+    if(err)
+      console.log(err);
+    else
+      res.status(200).send({msg:"ok"});
+  })
+})
 module.exports = router;

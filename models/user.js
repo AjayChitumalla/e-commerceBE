@@ -1,4 +1,5 @@
 var mongoose=require('mongoose');
+var Schema=mongoose.Schema;
 var passportLocalMongoose = require("passport-local-mongoose");
 var config = require('../config');
 var jwt = require('jsonwebtoken');
@@ -16,15 +17,7 @@ var UserSchema=new mongoose.Schema({
     isverified:{
         type:Boolean,
         default:false},
-    Donations:[{
-        Name:String,
-        Quantity:Number,
-        Image:String,
-        Category:String,
-        Description:String,
-        Time:String,
-        Status:String
-    }],
+    Donations:[{type: Schema.Types.ObjectId, ref : 'Donation'}],
     Address:{
         firstname:String,
         lastname:String,

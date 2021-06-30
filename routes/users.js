@@ -41,7 +41,7 @@ router.post('/login', function(req, res,next) {
         }
         let payload={subject:user._id}
         let token=jwt.sign(payload,config.secret);
-        res.status(200).send({msg:"Successfully Logged In!!!",token:user._id});
+        res.status(200).send({msg:"Successfully Logged In!!!",token:user});
     });
   })(req, res,next)
 });
@@ -133,7 +133,7 @@ router.post('/newpassword',(req, res)=> {
 });
 
 router.get('/:id',(req,res)=>{
-  RegUser.findById(req.params.id,(err,docs)=>{
+  RegUser.findById(req.params.id).populate('Donations').exec((err,docs)=>{
     if(err)
       console.log(err);
     else{
@@ -146,7 +146,7 @@ router.post('/order',(req,res)=>{
   id=req.body.uid;
   add=req.body.add;
   items=req.body.items;
-  RegUser.findByIdAndUpdate(id,{Address:add,$push:{Items:items}},(err,docs)=>{
+  RegUser.findByIdAndUpdate(id,{Address:add,$push:{Donations:items}},(err,docs)=>{
     if(err)
       console.log(err);
     else{
@@ -158,7 +158,8 @@ router.post('/order',(req,res)=>{
 router.post('/updateDonation',(req,res)=>{
   id=req.body.name;
   product=req.body.product;
-  RegUser.findByIdAndUpdate(id,{$push:{Donations:product}},(err,docs)=>{
+  address=req.body.address;
+  RegUser.findByIdAndUpdate(id,{Address:address,$push:{Donations:product}},(err,docs)=>{
     if(err)
       console.log(err);
     else
